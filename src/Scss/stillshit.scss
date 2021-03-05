@@ -1,0 +1,54 @@
+@use 'sass:color';
+
+// override theme
+$primary: #FFFFFF; // yellow
+$secondary: #FFE526; // light green
+$text-color: #000000;
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+
+// html tags
+a {
+    color: $text-color;
+}
+
+body {
+    margin: auto;
+    padding: 0px;
+    max-width: 1200px;
+
+    color: $text-color;
+    background: rgb(250,250,210);
+    background: linear-gradient(90deg, rgba(250,250,210,1) 0%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 75%, rgba(250,250,210,1) 100%);
+}
+
+video {
+    object-fit: fill;
+}
+
+
+// css class
+.card {
+    .card-header {
+        background-color: $secondary;
+    }
+
+    .card-body {
+        background-color: $primary;
+
+        .post-images {
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+.img-caption {
+    font-size: 0.75rem;
+}
+
+.menu {
+    margin: auto;
+    heigth: 50px;
+}

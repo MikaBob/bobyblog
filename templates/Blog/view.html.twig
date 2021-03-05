@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-2">
+        <a class="navbar-brand" href="#">Sort by: </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" id="happenedDate" href="#">Date of happening</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="creationDate"  href="#">Date it was written</a>
+                </li>
+                <!--
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Alphabetic</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Nb pictures</a>
+                </li>
+                -->
+            </ul>
+         </div>
+        <form class="form-inline mx-2 float-end">
+            <!-- <input class="form-control mr-sm-2" type="search" placeholder="Title" aria-label="Title"> -->
+        </form>
+    </nav>
+{% endblock %}
+
+{% block body %}
+    <div class="postContainer"></div>
+    <input type="hidden" id="currentOrderBy" value="happenedDate"/>
+    <input type="hidden" id="currentDirection" value="ASC"/>
+    <input type="hidden" id="currentPage" value="0"/>
+
+    {% include 'photoswipe.html.twig' only %}
+    <script>
+        $(document).on('click', 'a.gallery', (event) => {
+            var pswpElement = document.querySelectorAll('.pswp')[0];
+            let imgClicked = event.target.dataset;
+            let post = event.currentTarget.dataset;
+            var options = {
+                index: parseInt(imgClicked.index),
+                galleryPIDs: true,
+                galleryUID: post.id,
+                shareEl: false,
+                preload: [3,3]
+            };
+
+            let items = [];
+            $('a.gallery[data-id='+post.id+'] img').each((index, imgInGallery) => {
+                let dataForGallery = {
+                    src: imgInGallery.src,
+                    w: imgInGallery.dataset.width,
+                    h: imgInGallery.dataset.height,
+                    title: imgInGallery.dataset.caption,
+                    pid: imgInGallery.dataset.id
+                }
+                if(imgInGallery.dataset.isvideo === 'true') {
+                    dataForGallery = {
+                        html: '<div class="video-wrapper"><video controls autoplay  style="padding-top: 40px;"><source src="'+dataForGallery.src+'" type="video/mp4"></video></div>'
+                    };
+                }
+                items.push(dataForGallery);
+            });
+
+            // Initializes and opens PhotoSwipe
+            var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+            gallery.init();
+            gallery.goTo(parseInt(imgClicked.index));
+        });
+    </script>
+{% endblock body %}

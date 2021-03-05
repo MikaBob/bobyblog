@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <div class="form-group">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                {{ form_label(form.text) }}
+            </div>
+            {{ form_widget(form.text) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                {{ form_label(form.happenedDate) }}
+            </div>
+            {{ form_widget(form.happenedDate) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                {{ form_label(form.tags) }}
+            </div>
+            {{ form_widget(form.tags) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                {{ form_label(form.photos) }}
+            </div>
+            {{ form_widget(form.photos) }}
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+    <div class="image_list"></div>
+{% endblock body %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('#post_tags').change((e)=>{
+            $('#post_tags').val($('#post_tags').val().replace(/\s/g,''));
+        });
+
+        $('#post_photos').change(function(e) {
+            var fileId = e.target.id;
+
+            for (i = 0; i < $("#" + fileId).prop("files").length; i++) {
+                var formData = new FormData();
+                var fileData = $("#" + fileId).prop("files")[i];
+                formData.append("image", fileData);
+
+                $.ajax({
+                    url: "upload_image",
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    async: false,
+                    data: formData,
+                    type: 'post',
+
+                    success: function(data) {
+                        let imageIds = $("#post_imageIds").val();
+                        let newImageId = data.id;
+                        imageIds = imageIds === "" ? newImageId : imageIds+";"+newImageId
+                        $("#post_imageIds").val(imageIds);
+                        $(".image_list").html($(".image_list").html()+'<figure class="image-thumbnail"><img width="200" height="100" src="/uploads/'+data.src+'"/><figcaption><input class="imageCaptions" id="caption_for_'+newImageId+'" data-id="'+newImageId+'" type="text" /></figcaption></figure>');
+                    }
+                });
+            }
+        });
+
+        $(document).on('change', '.imageCaptions', (e) => {
+
+            let typingTimer;
+            let doneTypingInterval = 2000;
+            let selectorOfInputTextForCaption = e.target;
+
+            $(selectorOfInputTextForCaption).keyup(function(){
+                clearTimeout(typingTimer);
+                if ($(selectorOfInputTextForCaption).val()) {
+                    typingTimer = setTimeout(doneTyping, doneTypingInterval, selectorOfInputTextForCaption.dataset.id);
+                }
+            });
+        });
+
+        var doneTyping = (imgId) => {
+            let data = {
+                id: imgId,
+                caption: $("#caption_for_"+imgId).val()
+            };
+
+            $.ajax({
+                url: "update_image",
+                cache: false,
+                async: true,
+                data: data,
+                type: 'post'
+            });
+        }
+    </script>
+{% endblock javascripts %}
