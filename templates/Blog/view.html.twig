@@ -1,36 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block header %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light px-2">
-        <a class="navbar-brand" href="#">Sort by: </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" id="happenedDate" href="#">Date of happening</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="creationDate"  href="#">Date it was written</a>
-                </li>
-                <!--
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Alphabetic</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Nb pictures</a>
-                </li>
-                -->
-            </ul>
-         </div>
-        <form class="form-inline mx-2 float-end">
-            <!-- <input class="form-control mr-sm-2" type="search" placeholder="Title" aria-label="Title"> -->
-        </form>
-    </nav>
-{% endblock %}
-
 {% block body %}
+    <div class="my-2">Current sort: <span class="currentView"/></div>
     <div class="postContainer"></div>
     <input type="hidden" id="currentOrderBy" value="happenedDate"/>
     <input type="hidden" id="currentDirection" value="ASC"/>

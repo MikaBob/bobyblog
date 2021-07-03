@@ -32,7 +32,7 @@ function css() {
         .pipe(plumber())
         .pipe(rename({ suffix: ".min" }))
         .pipe(sass({ outputStyle: "expanded" }))
-        .pipe(postcss([autoprefixer(), cssnano()]))
+        //.pipe(postcss([autoprefixer(), cssnano()]))
         .pipe(gulp.dest(OUTPOUT_DIR))
         .pipe(browser_sync.stream());
 }
@@ -64,7 +64,7 @@ function copyDependencies() {
             "node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js",
             "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css",
             "node_modules/jquery/dist/jquery.min.js",
-            "node_modules/@popperjs/core/dist/umd/popper.min.js",
+            "node_modules/popper.js/dist/umd/popper.min.js",
             "node_modules/photoswipe/dist/**/*",
             "!node_modules/photoswipe/dist/photoswipe.js",
             "!node_modules/photoswipe/dist/photoswipe-ui-default.js"
