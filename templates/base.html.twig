@@ -10,27 +10,29 @@
         <script src="{{ asset('scripts/jquery.min.js') }}"></script>
     </head>
     <body>
-        <header class="header px-2">
-            <nav class="navbar navbar-expand-sm">
-                <a class="navbar-brand mb-0 h1">Bobyblog</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
+        <div class="row">
+                <nav class="navbar navbar-expand-sm">
+                    <a class="navbar-brand mb-0 h1">Bobyblog</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" id="happenedDate" href="#">Sort by happened date</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="creationDate"  href="#">Sort by posting date</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" id="happenedDate" href="#">Sort by happened date</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="creationDate"  href="#">Sort by posting date</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+        </div>
 
-        <div class="container">
+        <div class="my-2">Current sort: <span class="currentView"/></div>
+
+        <div class="container p-sm-0">
             {% block body %}{% endblock %}
         </div>
 

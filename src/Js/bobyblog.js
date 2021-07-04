@@ -1,6 +1,6 @@
 function getPosts(orderBy, direction, offset, filter = null) {
     var postContainer = $('.postContainer');
-//    console.log(orderBy, direction, offset);
+
     $.ajax({
             method: 'GET',
             url: '/post/get',
@@ -13,7 +13,7 @@ function getPosts(orderBy, direction, offset, filter = null) {
                 } else if (orderBy === $('#currentOrderBy').val()){
                     postContainer.html('');
                 }
-                $('#currentDirection').val($('#currentDirection').val()=== 'ASC' ? 'DESC':'ASC');
+                $('#currentDirection').val($('#currentDirection').val() === 'ASC' ? 'DESC':'ASC');
             }
     })
     .done((response) => {

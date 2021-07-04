@@ -1,47 +1,48 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="my-2">Current sort: <span class="currentView"/></div>
-    <div class="postContainer"></div>
-    <input type="hidden" id="currentOrderBy" value="happenedDate"/>
-    <input type="hidden" id="currentDirection" value="ASC"/>
-    <input type="hidden" id="currentPage" value="0"/>
+    <div class="row">
+        <div class="postContainer"></div>
+        <input type="hidden" id="currentOrderBy" value="happenedDate"/>
+        <input type="hidden" id="currentDirection" value="ASC"/>
+        <input type="hidden" id="currentPage" value="0"/>
 
-    {% include 'photoswipe.html.twig' only %}
-    <script>
-        $(document).on('click', 'a.gallery', (event) => {
-            var pswpElement = document.querySelectorAll('.pswp')[0];
-            let imgClicked = event.target.dataset;
-            let post = event.currentTarget.dataset;
-            var options = {
-                index: parseInt(imgClicked.index),
-                galleryPIDs: true,
-                galleryUID: post.id,
-                shareEl: false,
-                preload: [3,3]
-            };
+        {% include 'photoswipe.html.twig' only %}
+        <script>
+            $(document).on('click', 'a.gallery', (event) => {
+                var pswpElement = document.querySelectorAll('.pswp')[0];
+                let imgClicked = event.target.dataset;
+                let post = event.currentTarget.dataset;
+                var options = {
+                    index: parseInt(imgClicked.index),
+                    galleryPIDs: true,
+                    galleryUID: post.id,
+                    shareEl: false,
+                    preload: [3,3]
+                };
 
-            let items = [];
-            $('a.gallery[data-id='+post.id+'] img').each((index, imgInGallery) => {
-                let dataForGallery = {
-                    src: imgInGallery.src,
-                    w: imgInGallery.dataset.width,
-                    h: imgInGallery.dataset.height,
-                    title: imgInGallery.dataset.caption,
-                    pid: imgInGallery.dataset.id
-                }
-                if(imgInGallery.dataset.isvideo === 'true') {
-                    dataForGallery = {
-                        html: '<div class="video-wrapper"><video controls autoplay  style="padding-top: 40px;"><source src="'+dataForGallery.src+'" type="video/mp4"></video></div>'
-                    };
-                }
-                items.push(dataForGallery);
+                let items = [];
+                $('a.gallery[data-id='+post.id+'] img').each((index, imgInGallery) => {
+                    let dataForGallery = {
+                        src: imgInGallery.src,
+                        w: imgInGallery.dataset.width,
+                        h: imgInGallery.dataset.height,
+                        title: imgInGallery.dataset.caption,
+                        pid: imgInGallery.dataset.id
+                    }
+                    if(imgInGallery.dataset.isvideo === 'true') {
+                        dataForGallery = {
+                            html: '<div class="video-wrapper"><video controls autoplay  style="padding-top: 40px;"><source src="'+dataForGallery.src+'" type="video/mp4"></video></div>'
+                        };
+                    }
+                    items.push(dataForGallery);
+                });
+
+                // Initializes and opens PhotoSwipe
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+                gallery.init();
+                gallery.goTo(parseInt(imgClicked.index));
             });
-
-            // Initializes and opens PhotoSwipe
-            var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
-            gallery.init();
-            gallery.goTo(parseInt(imgClicked.index));
-        });
-    </script>
+        </script>
+    </div>
 {% endblock body %}
