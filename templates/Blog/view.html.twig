@@ -1,48 +1,127 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row">
-        <div class="postContainer"></div>
+    <div class="row mb-2">
+        <div class="btn-group btn-group-sm col-4" role="group" aria-label="Sorting buttons">
+            <span class="p-1">Sort by</span>
+            <input type="radio" class="btn-check" name="radioSort" id="sortButtonHappenedDate" autocomplete="off" checked />
+            <label class="btn btn-outline-primary ms-2" for="sortButtonHappenedDate">Happened date</label>
+
+            <input type="radio" class="btn-check" name="radioSort" id="sortButtonCreationDate" autocomplete="off">
+            <label class="btn btn-outline-primary" for="sortButtonCreationDate">Posting date</label>
+        </div>
+
+        <div class="btn-group btn-group-sm col-4" role="group">
+            <span class="p-1">Order by</span>
+            <input type="radio" class="btn-check" name="btnradioOrder" id="sortButtonOrderAsc" autocomplete="off" checked />
+            <label class="btn btn-outline-primary ms-2" for="sortButtonOrderAsc">Ascending</label>
+
+            <input type="radio" class="btn-check" name="btnradioOrder" id="sortButtonOrderDesc" autocomplete="off" />
+            <label class="btn btn-outline-primary" for="sortButtonOrderDesc">Descending</label>
+        </div>
+
+        <div id="sortButtonFilter" class="col-4"  style="display: none;">
+            <span class="p-1">Filter</span>
+            <div id="filterButtons" class="btn-group btn-group-sm" role="group"></div>
+        </div>
+
         <input type="hidden" id="currentOrderBy" value="happenedDate"/>
         <input type="hidden" id="currentDirection" value="ASC"/>
+        <input type="hidden" id="currentFilter"/>
         <input type="hidden" id="currentPage" value="0"/>
-
-        {% include 'photoswipe.html.twig' only %}
-        <script>
-            $(document).on('click', 'a.gallery', (event) => {
-                var pswpElement = document.querySelectorAll('.pswp')[0];
-                let imgClicked = event.target.dataset;
-                let post = event.currentTarget.dataset;
-                var options = {
-                    index: parseInt(imgClicked.index),
-                    galleryPIDs: true,
-                    galleryUID: post.id,
-                    shareEl: false,
-                    preload: [3,3]
-                };
-
-                let items = [];
-                $('a.gallery[data-id='+post.id+'] img').each((index, imgInGallery) => {
-                    let dataForGallery = {
-                        src: imgInGallery.src,
-                        w: imgInGallery.dataset.width,
-                        h: imgInGallery.dataset.height,
-                        title: imgInGallery.dataset.caption,
-                        pid: imgInGallery.dataset.id
-                    }
-                    if(imgInGallery.dataset.isvideo === 'true') {
-                        dataForGallery = {
-                            html: '<div class="video-wrapper"><video controls autoplay  style="padding-top: 40px;"><source src="'+dataForGallery.src+'" type="video/mp4"></video></div>'
-                        };
-                    }
-                    items.push(dataForGallery);
-                });
-
-                // Initializes and opens PhotoSwipe
-                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
-                gallery.init();
-                gallery.goTo(parseInt(imgClicked.index));
-            });
-        </script>
     </div>
+    <div class="row position-relative">
+        <div id="postContainer"></div>
+        <div id="loadingScreen" class="justify-content-center">
+            <div class="spinner spinner-border" role="loading"></div>
+        </div>
+        {% include 'photoswipe.html.twig' only %}
+    </div>
+
+    <script>
+        getPosts = (orderBy = 'happenedDate', direction = 'ASC', offset = 0, filter = null) => {
+            var postContainer = $('#postContainer');
+
+            $.ajax({
+                    method: 'GET',
+                    url: '/post/get',
+                    ajax: true,
+                    data: {orderBy: orderBy, direction: direction, offset: offset, filter: filter},
+
+                    beforeSend: () => {
+                        startLoading();
+                        postContainer.html('');
+                    }
+            })
+            .done((response) => {
+                postContainer.append(response);
+                $('.tags .tag a').click((e) => {
+                    let tagName = e.currentTarget.outerText.slice(1); // remove first char
+                    if(tagName !== $('#currentFilter').val()){
+                        addFilter(tagName);
+                        applySort();
+                    }
+                });
+            })
+            .always(() => {
+                stopLoading();
+            });
+        };
+
+        bindClickListener = () => {
+            // Sorting buttons
+            $('#sortButtonHappenedDate').click(() => {
+                $('#currentOrderBy').val('happenedDate');
+                applySort();
+            });
+
+            $('#sortButtonCreationDate').click(() => {
+                $('#currentOrderBy').val('creationDate');
+                applySort();
+            });
+
+
+            $('#sortButtonOrderAsc').click(() => {
+                $('#currentDirection').val('ASC');
+                applySort();
+            });
+
+            $('#sortButtonOrderDesc').click(() => {
+                $('#currentDirection').val('DESC');
+                applySort();
+            });
+        };
+
+        applySort = () => {
+            getPosts(
+                $('#currentOrderBy').val(),
+                $('#currentDirection').val(),
+                parseInt($('#currentPage').val()),
+                $('#currentFilter').val()
+            );
+        };
+
+        addFilter = (tagName) => {
+            $('#filterButtons').html('<label onclick="removeFilters(); applySort();" class="btn btn-primary">' + tagName + '</label>');
+            $('#currentFilter').val(tagName);
+            $('#sortButtonFilter').show();
+        };
+
+        removeFilters = () => {
+            $('#filterButtons').html('');
+            $('#sortButtonFilter').hide();
+            $('#currentFilter').val('');
+        };
+
+        startLoading = () => {
+            $('#loadingScreen').show();
+        };
+
+        stopLoading = () => {
+            $('#loadingScreen').hide();
+        };
+
+        bindClickListener();
+        getPosts();
+    </script>
 {% endblock body %}

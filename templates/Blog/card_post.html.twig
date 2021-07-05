@@ -3,8 +3,8 @@
         <div class="card-header">
             <div class="happended-date d-inline-block d-sm-none">Happened on {{ post.happenedDate|format_datetime(pattern='dd/MM') }}</div>
             <div class="happended-date d-none d-sm-inline-block">Happened on {{ post.happenedDate|format_datetime('short', 'none', locale='fr') }}</div>
-            <div class="creation-date d-inline-block d-sm-none float-right">Written on {{ post.creationDate|format_datetime(pattern='dd/MM') }}</div>
-            <div class="creation-date d-none d-sm-inline-block float-right">Written on {{ post.creationDate|format_datetime('short', 'none', locale='fr') }}</div>
+            <div class="creation-date d-inline-block d-sm-none float-end">Written on {{ post.creationDate|format_datetime(pattern='dd/MM') }}</div>
+            <div class="creation-date d-none d-sm-inline-block float-end">Written on {{ post.creationDate|format_datetime('short', 'none', locale='fr') }}</div>
         </div>
         <div class="card-body container-fluid">
             <div class="card-text"><p>{{ post.text }}</p></div>
@@ -39,3 +39,47 @@
     </div>
 {% endfor %}
 
+
+<script>
+     $(document).on('click', 'a.gallery', (event) => {
+         let imgClicked = event.target.dataset;
+         let post = event.currentTarget.dataset;
+
+         openGallery(post.id, imgClicked.index);
+     });
+
+     openGallery = (postId, imgIndex) => {
+         var options = {
+             index: parseInt(imgIndex),
+             galleryPIDs: true,
+             galleryUID: postId,
+             shareEl: false,
+             preload: [3,3]
+         };
+
+         let items = [];
+         $('a.gallery[data-id='+postId+'] img').each((index, imgInGallery) => {
+             let dataForGallery = {
+                 src: imgInGallery.src,
+                 w: imgInGallery.dataset.width,
+                 h: imgInGallery.dataset.height,
+                 title: imgInGallery.dataset.caption,
+                 pid: imgInGallery.dataset.id
+             }
+             if(imgInGallery.dataset.isvideo === 'true') {
+                 dataForGallery = {
+                     html: '<div class="video-wrapper"><video controls autoplay  style="padding-top: 40px;"><source src="'+dataForGallery.src+'" type="video/mp4"></video></div>'
+                 };
+             }
+             items.push(dataForGallery);
+         });
+
+
+         var pswpElement = document.querySelectorAll('.pswp')[0];
+
+         // Initializes and opens PhotoSwipe
+         var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+         gallery.init();
+         gallery.goTo(parseInt(imgIndex));
+     };
+</script>

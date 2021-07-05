@@ -60,11 +60,11 @@ function scripts() {
 function copyDependencies() {
     return gulp
         .src([
-            "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+            "node_modules/bootstrap/dist/js/bootstrap.min.js",
             "node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js",
             "node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css",
             "node_modules/jquery/dist/jquery.min.js",
-            "node_modules/popper.js/dist/umd/popper.min.js",
+            "node_modules/@popperjs/core/dist/umd/popper.min.js",
             "node_modules/photoswipe/dist/**/*",
             "!node_modules/photoswipe/dist/photoswipe.js",
             "!node_modules/photoswipe/dist/photoswipe-ui-default.js"

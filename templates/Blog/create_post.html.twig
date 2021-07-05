@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block header %}{% endblock %}
 {% block body %}
     {{ form_start(form) }}
     <div class="form-group">
@@ -40,8 +40,9 @@
 
     {{ form_end(form) }}
     <br>
+    <div class="isDoneTyping text-success">Done !</div>
     <div class="image_list"></div>
-{% endblock body %}
+{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -73,7 +74,7 @@
                         imageIds = imageIds === "" ? newImageId : imageIds+";"+newImageId
                         $("#post_imageIds").val(imageIds);
                         $(".image_list").html($(".image_list").html()+'\
-                            <figure class="p-1 bg-primary d-inline-block mx-2 image-thumbnail">\n\
+                            <figure class="pr-1 bg-primary d-inline-block mx-2 image-thumbnail">\n\
                                 <img width="200" height="100" src="/uploads/'+data.src+'"/>\n\
                                 <figcaption>\n\
                                     <input class="w-100 mt-1 imageCaptions" id="caption_for_'+newImageId+'" data-id="'+newImageId+'" type="text" />\n\
@@ -85,21 +86,14 @@
             }
         });
 
-        $(document).on('change', '.imageCaptions', (e) => {
-
-            let typingTimer;
-            let doneTypingInterval = 2000;
-            let selectorOfInputTextForCaption = e.target;
-
-            $(selectorOfInputTextForCaption).keyup(function(){
-                clearTimeout(typingTimer);
-                if ($(selectorOfInputTextForCaption).val()) {
-                    typingTimer = setTimeout(doneTyping, doneTypingInterval, selectorOfInputTextForCaption.dataset.id);
-                }
-            });
+        $(document).on('keydown', '.imageCaptions', (e) => {
+            $('.isDoneTyping').removeClass('text-success');
+            $('.isDoneTyping').addClass('text-danger');
+            $('.isDoneTyping').text('Typing...');
         });
 
-        var doneTyping = (imgId) => {
+        $(document).on('change', '.imageCaptions', (e) => {
+            let imgId = e.target.dataset.id;
             let data = {
                 id: imgId,
                 caption: $("#caption_for_"+imgId).val()
@@ -110,8 +104,14 @@
                 cache: false,
                 async: true,
                 data: data,
-                type: 'post'
+                type: 'post',
+
+                success: function() {
+                    $('.isDoneTyping').removeClass('text-danger');
+                    $('.isDoneTyping').addClass('text-success');
+                    $('.isDoneTyping').text('Done !');
+                }
             });
-        }
+        });
     </script>
-{% endblock javascripts %}
+{% endblock %}
