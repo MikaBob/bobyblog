@@ -1,6 +1,6 @@
 # Bobyblog
 
-Just Another Blog. Mobile compatible
+Just Another Blog. Compatible for small screen
 
 #  Install
 
@@ -12,7 +12,7 @@ Just Another Blog. Mobile compatible
   
   - Node & Npm => [https://nodejs.org/](https://nodejs.org/en/)
 
-- Yarn (a "better" packet maanger than npm) `npm install yarn -g`
+- Yarn (a "better" packet manager than npm) `npm install yarn -g`
 - Gulp (for automation) `npm install gulp -g`
 
 ## Compile
@@ -25,9 +25,9 @@ Just Another Blog. Mobile compatible
 
 ### Database
 
-`php app/console doctrine:database:create`
+`php bin/console doctrine:database:create`
 
-`php app/console doctrine:schema:update`
+`php bin/console doctrine:schema:update`
  
  ### Scripts
  
