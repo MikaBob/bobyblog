@@ -1,0 +1,33 @@
+body {
+    margin: auto;
+    padding: 0px;
+    max-width: 1200px;
+}
+
+header {
+    background-color: rgb(40, 57, 74);
+}
+
+a {
+    color: white;
+}
+
+table {
+    caption-side: top;
+}
+
+video {
+    object-fit: fill;
+}
+
+.navbar-toggler-icon {
+    background-image: url('/public_html/navbar-toggler-icon.png');
+}
+
+.video-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}

@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post creation{% endblock %}
+
+{% block content %}
+    <h2>Post creation</h2>
+    <form action="/post/create" method="POST">
+        <div class="mb-3">
+            <label for="happenedDate" class="form-label">Happened Date</label>
+            <input type="date" class="form-control" id="happenedDate" name="happenedDate" value="{{ post.happenedDate|date('Y-m-d') }}">
+        </div>
+        
+        <div class="mb-3">
+            <label for="text" class="form-label">Text</label>
+            <textarea class="form-control" id="text" name="text">{{ post.text }}</textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="tags" class="form-label">Tags</label>
+            <input type="text" class="form-control" id="tags" name="tags" value="{{ post.tags|join(';') }}">
+        </div>
+        
+        <div class="mb-3">
+            <label for="files" class="form-label">Uploader</label>
+            <input type="file" class="form-control" id="files" multiple="multiple">
+            <input type="text" class="form-control" id="medias" name="medias" value="{{ post.medias|join(';') }}">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="errors">
+        {% if errors is not empty %}
+            {% for error in errors %}
+                <div class="my-1 alert alert-danger">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        </div>
+    </form>
+    <div class="isDoneTyping text-success">Ready</div>
+    <div class="media_list"></div>
+{% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $('#tags').change((e)=>{
+        $('#tags').val($('#tags').val().replace(/\s/g,''));
+    });
+    $('#files').change(function(e) {
+        var fileId = e.target.id;
+        for (i = 0; i < $("#" + fileId).prop("files").length; i++) {
+            var formData = new FormData();
+            var fileData = $("#" + fileId).prop("files")[i];
+            formData.append("files", fileData);
+            $.ajax({
+                url: "/mediaAPI/uploadMedia",
+                cache: false,
+                contentType: false,
+                processData: false,
+                async: false,
+                data: formData,
+                type: 'POST',
+                success: function(data) {
+                    let mediaIds = $("#medias").val();
+                    let newMediaId = data.id;
+                    mediaIds = mediaIds === "" ? newMediaId : mediaIds+";"+newMediaId;
+                    $("#medias").val(mediaIds);
+                    $(".media_list").html($(".media_list").html()+'\
+                        <figure class="pr-1 d-inline-block mx-2 media-thumbnail">\n\
+                            <img width="200" height="100" src="{{ uploadDir }}'+data.src+'"/>\n\
+                            <figcaption>\n\
+                                <input class="w-100 mt-1 mediaCaptions" id="caption_for_'+newMediaId+'" data-id="'+newMediaId+'" type="text" placeholder="'+newMediaId+'" />\n\
+                            </figcaption>\n\
+                        </figure>\n\
+                    ');
+                },
+                error: (data) =>{
+                    $('.errors').html($('.errors').html()+'<div class="my-1 alert alert-danger">'+data.responseText+'</div>');
+                    setTimeout(()=>{$('.errors').html('')}, 5000);
+                }
+            });
+        }
+    });
+    $(document).on('keydown', '.mediaCaptions', (e) => {
+        $('.isDoneTyping').removeClass('text-success');
+        $('.isDoneTyping').addClass('text-danger');
+        $('.isDoneTyping').text('Typing...');
+    });
+    $(document).on('change', '.mediaCaptions', (e) => {
+        let imgId = e.target.dataset.id;
+        console.log(e);
+        let data = {
+            id: imgId,
+            caption: $("#caption_for_"+imgId).val()
+        };
+        $.ajax({
+            url: "/mediaAPI/updateMedia",
+            cache: false,
+            async: true,
+            data: data,
+            type: 'POST',
+            success: function() {
+                $('.isDoneTyping').removeClass('text-danger');
+                $('.isDoneTyping').addClass('text-success');
+                $('.isDoneTyping').text('Done !');
+            }
+        });
+    });
+</script>
+{% endblock %}

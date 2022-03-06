@@ -1,0 +1,43 @@
+<article class="row card mb-3">
+    <div class="card-header">
+        <div class="happended-date d-inline-block d-sm-none">Happened the {{ post.happened_date|format_datetime(pattern='dd/MM') }}</div>
+        <div class="happended-date d-none d-sm-inline-block">Happened the {{ post.happened_date|format_datetime('short', 'none', locale='fr') }}</div>
+        <div class="creation-date d-inline-block d-sm-none float-end">Written the {{ post.creation_date|format_datetime(pattern='dd/MM') }}</div>
+        <div class="creation-date d-none d-sm-inline-block float-end">Written the {{ post.creation_date|format_datetime('short', 'none', locale='fr') }}</div>
+    </div>
+    <div class="card-body container-fluid">
+        <div class="card-text"><p>{{ post.text }}</p></div>
+        {% set cpt = 0 %}
+        <div class="row display-flex post-medias">
+            {% for media in post.medias %}
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+                    <a class="gallery" data-postid="{{ post.id }}" data-index="{{ cpt }}" href="#">
+                    <figure>
+                        <div class="media-container m-0 border-0"
+                            data-id="{{ media.id }}"
+                            data-caption="{{ media.caption }}"
+                            data-width="{{ media.width }}"
+                            data-height="{{ media.height }}"
+                            data-src="/public_html{{ post.getAlbumPath() ~ media.getFileNameWithExtension()}}"
+                            data-isvideo="{% if media.isVideo() %}true{% else %}false{% endif %}"
+                        >
+                        {% if media.isVideo %}
+                            <video class="img-thumbnail"><source src="/public_html{{ post.getAlbumPath() ~ media.getFileNameWithExtension()}}"></video>
+                        {% else %}
+                            <img class="img-thumbnail" src="/public_html{{ post.getAlbumPath() ~ media.getFileNameWithExtension()}}" />
+                        {% endif %}
+                            </div>
+                        </a>
+                        {% if media.caption is not null and media.caption != '' %}<figcaption class="text-center img-caption">{{ media.caption }}</figcaption>{% endif %}
+                    </figure>
+                    {% set cpt = cpt + 1 %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="tags pt-3 p-2">
+            {% for tag in post.tags %}
+                <span class="tag d-inline-block bg-secondary rounded p-2 mr-2 my-2"><a href="#"><u>#{{ tag }}</u></a></span>
+            {% endfor %}
+        </div>
+    </div>
+</article>

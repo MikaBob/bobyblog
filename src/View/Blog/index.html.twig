@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bobyblog{% endblock %}
+
+{% block content %}
+    <h1>I am alive and I am happy :)</h1>
+    <div class="container">
+    {% for post in posts  %}
+        {% include 'Blog/article.html.twig' %}
+    {% endfor %}
+    </div>
+        
+    {% include 'photoswipe.html.twig' %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if posts is not empty %}
+    <script>
+         $(document).on('click', 'a.gallery', (event) => {
+             console.log(event);
+             openGallery(parseInt(event.currentTarget.dataset.postid), parseInt(event.currentTarget.dataset.index));
+         });
+         openGallery = (postId, mediaIndex) => {
+             var options = {
+                 index: mediaIndex,
+                 galleryPIDs: true,
+                 galleryUID: postId,
+                 shareEl: false,
+                 preload: [3,3]
+             };
+             let items = [];
+             $('a.gallery[data-postid='+postId+'] .media-container').each((index, mediaInGallery) => {
+                 let dataForGallery = {
+                     src: mediaInGallery.dataset.src,
+                     w: mediaInGallery.dataset.width,
+                     h: mediaInGallery.dataset.height,
+                     title: mediaInGallery.dataset.caption,
+                     pid: mediaInGallery.dataset.id
+                 }
+
+                 if(mediaInGallery.dataset.isvideo === 'true') {
+                    dataForGallery = {
+                        html: '<div class="video-wrapper"><video controls ><source src="'+mediaInGallery.dataset.src+'" type="video/mp4"></video></div>'
+                    };
+                }
+                 items.push(dataForGallery);
+             });
+
+            var pswpElement = document.querySelectorAll('.pswp')[0];
+            // Initializes and opens PhotoSwipe
+            var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+            gallery.listen('beforeChange', () => {document.querySelectorAll('video').forEach(vid => vid.pause());});
+             gallery.init();
+         };
+    </script>
+    {% endif %}
+{% endblock %}

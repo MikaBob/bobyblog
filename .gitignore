@@ -1,26 +1,13 @@
-### symfony ###
-/.env
-/.env.test
-/.env.local
-/.env.local.php
-/.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
-/vendor/
-.phpunit
-.phpunit.result.cache
-/phpunit.xml
-### symfony ###
-
-## node ##
+## compiler ##
 /yarn-error.log
 /node_modules
+/vendor/
 ## node ##
 
-#project #
+## project ##
+/.env
 /nbproject
-/public/scripts
-/public/album
-/public/uploads
+/tmp/
+/public_html/album/
+/public_html/uploads/
 #project #
