@@ -40,6 +40,8 @@ class PostController extends DefaultController {
                 $mediaDAO = new MediaDAO();
 
                 foreach(explode(';', $medias) as $imgageId){
+                    if($imgageId === '')
+                        continue;
                     $img = $mediaDAO->getById($imgageId);
                     if (file_exists(UPLOAD_DIR . $img->getFilenameWithExtension())) {
                         $img->setPostId($post->getId());

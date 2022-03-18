@@ -59,6 +59,10 @@ class Router {
             }
         }
 
+        // Get-parameter on Homepage
+        if(isset($path[1]) && isset($path[1][0]) && $path[1][0] === '?'){
+            $path = [];
+        }
         // Default Controller and action are Blog and index
         $request = [
             'controller' => empty($path[1]) ? 'Blog' : ucfirst($path[1]),

@@ -4,7 +4,7 @@ namespace Bobyblog\Model;
 
 abstract class AbstractDAO {
 
-    private \PDO $dbConnection;
+    private static \PDO $dbConnection;
     protected string $tableName;
 
     public function __construct(string $tableName){
@@ -12,9 +12,9 @@ abstract class AbstractDAO {
     }
 
     public function getDbConnection(): \PDO{
-        if(!isset($this->dbConnection))
-            $this->dbConnection = new \PDO($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
-        return $this->dbConnection;
+        if(!isset(AbstractDAO::$dbConnection))
+            AbstractDAO::$dbConnection = new \PDO($_ENV['DB_DSN'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+        return AbstractDAO::$dbConnection;
     }
 
     public function getAll(){

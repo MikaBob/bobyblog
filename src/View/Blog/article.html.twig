@@ -1,9 +1,9 @@
 <article class="row card mb-3">
     <div class="card-header">
-        <div class="happended-date d-inline-block d-sm-none">Happened the {{ post.happened_date|format_datetime(pattern='dd/MM') }}</div>
-        <div class="happended-date d-none d-sm-inline-block">Happened the {{ post.happened_date|format_datetime('short', 'none', locale='fr') }}</div>
-        <div class="creation-date d-inline-block d-sm-none float-end">Written the {{ post.creation_date|format_datetime(pattern='dd/MM') }}</div>
-        <div class="creation-date d-none d-sm-inline-block float-end">Written the {{ post.creation_date|format_datetime('short', 'none', locale='fr') }}</div>
+        <div class="happended-date d-inline-block d-sm-none">Happened the {{ post.happenedDate|format_datetime(pattern='dd/MM') }}</div>
+        <div class="happended-date d-none d-sm-inline-block">Happened the {{ post.happenedDate|format_datetime('short', 'none', locale='fr') }}</div>
+        <div class="creation-date d-inline-block d-sm-none float-end">Written the {{ post.creationDate|format_datetime(pattern='dd/MM') }}</div>
+        <div class="creation-date d-none d-sm-inline-block float-end">Written the {{ post.creationDate|format_datetime('short', 'none', locale='fr') }}</div>
     </div>
     <div class="card-body container-fluid">
         <div class="card-text"><p>{{ post.text }}</p></div>
@@ -36,7 +36,7 @@
         </div>
         <div class="tags pt-3 p-2">
             {% for tag in post.tags %}
-                <span class="tag d-inline-block bg-secondary rounded p-2 mr-2 my-2"><a href="#"><u>#{{ tag }}</u></a></span>
+                <span class="tag d-inline-block bg-secondary rounded p-1 mr-2 my-2"><a href="/?tags={{ tag }}"><u>#{{ tag }}</u></a></span>
             {% endfor %}
         </div>
     </div>

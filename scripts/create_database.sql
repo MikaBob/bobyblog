@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS `post` (
     `text` longtext COLLATE utf8mb4_unicode_ci,
     `happened_date` datetime NOT NULL,
     `creation_date` datetime NOT NULL,
-    `medias` longtext COLLATE utf8mb4_unicode_ci,
     `tags` longtext COLLATE utf8mb4_unicode_ci,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

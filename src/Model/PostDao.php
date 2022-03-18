@@ -62,24 +62,51 @@ class PostDao extends AbstractDAO {
     }
 
     private function fromObjToPost($obj): Post{
+        $tags = $obj->tags !== null ? explode(';', $obj->tags) : [];
         $post = new Post(
             $obj->text,
             new \DateTime($obj->happened_date),
             new \DateTime($obj->creation_date),
-            $obj->tags !== null ? explode(';', $obj->tags) : []
+            ($tags[0] === '' ? [] : $tags)
         );
+        
         $post->setId($obj->id);
         return $post;
     }
 
-    public function listBy(array $tags = [], string $orderBy = 'happened_date', $direction = 'DESC', $offset = 0, $limit = 100){
-        $sql = "SELECT * FROM $this->tableName";
-        $sql .= "\n ORDER BY `$orderBy` " . ($direction === 'ASC' ? $direction : 'DESC');
-        $sql .= "\n LIMIT " . (is_numeric($limit) ? $limit : 0);
-        $sql .= "\n OFFSET " . (is_numeric($offset) ? $offset : 0);
+    public function listBy(array $param = [], $offset = 0, string $orderBy = 'happened_date', $direction = 'DESC', $limit = 10){
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM $this->tableName";
+        
+        if(!empty($param)){
+            $sql .= "\nWHERE 1=1";
+            if(isset($param['happenedDate'])){
+                if(isset($param['happenedDate']['from'])){
+                    $sql .= "\n\tAND `happened_date` >= '" . $param['happenedDate']['from']->format('Y-m-d')."'";
+                }
+                if(isset($param['happenedDate']['to'])){
+                    $sql .= "\n\tAND `happened_date` <= '" . $param['happenedDate']['to']->format('Y-m-d')."'";
+                }
+            }
+            if(isset($param['tags'])){
+                $sql .= "\n\tAND (1=1";
+                foreach($param['tags'] as $tag){
+                    if($tag !== '')
+                        $sql .= "\n\tAND `tags` LIKE \"%". str_ireplace(['"', '\\','\''], '', $tag)."%\"";
+                }
+                $sql .= "\n\t)";
+            }
+        }
+
+        $sql .= "\nORDER BY `$orderBy` " . ($direction === 'ASC' ? $direction : 'DESC');
+        $sql .= "\nLIMIT " . (is_numeric($limit) ? $limit : 0);
+        $sql .= "\nOFFSET " . (is_numeric($offset) ? $offset : 0);
+        $sql .= "\n;";
+
+//        echo($sql);die();
 
         $query = $this->getDbConnection()->prepare($sql);
         $query->execute();
+        $count = $this->getDbConnection()->query('SELECT FOUND_ROWS();')->fetchColumn();
 
         $posts = [];
         $mediaDao = new MediaDAO();
@@ -89,7 +116,9 @@ class PostDao extends AbstractDAO {
             $tmpPost->setMedias($mediaDao->getByPostId($tmpPost));
             $posts[] = $tmpPost;
         }
-        
-        return $posts;
+        return [
+            'posts' => $posts,
+            'count' => $count
+        ];
     }
 }

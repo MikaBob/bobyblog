@@ -1,0 +1,26 @@
+<div class="content-header">
+    <h1 style="text-align:center;">I am alive and I am happy :)</h1>
+    <form class="form-inline my-3" action="/" method="GET">
+        <div class="form-group row">
+            <label for="from" class="col-2 col-sm-1 col-form-label text-md-center">From</label>
+            <div class="col-10 col-sm-5 col-md-4 col-lg-4">
+                <input type="date" class="form-control" id="from" name="from" value="{{ happenedDate.from|date('Y-m-d') }}" max="{{ "now"|date('Y-m-d') }}">
+            </div>
+            <label for="to" class="col-2 col-sm-1 col-form-label text-md-center">To</label>
+            <div class="col-10 col-sm-5 col-md-4 col-lg-4">
+                <input type="date" class="form-control" id="to" name="to" value="{{ happenedDate.to|date('Y-m-d') }}" max="{{ "now"|date('Y-m-d') }}">
+            </div>
+            <input type="hidden" id="tagsCopy" name="tags" value="" />
+            <div class="col-12 col-md-2 col-lg-2">
+                <button class='btn btn-primary border border-secondary w-100'>
+                    Filter
+                </button>
+            </div>
+       </div>
+    </form>
+</div>
+<script>
+    $('input#tags').change((e) =>{
+        $('input#tagsCopy').val(e.currentTarget.value);
+    });
+</script>

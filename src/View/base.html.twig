@@ -11,36 +11,12 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div class="container bg-light px-0">
-            <header class="header px-2">
-                <nav class="navbar navbar-expand-sm">
-                    <a class="navbar-brand mb-0 h1" href="/" >Bobyblog</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    {% if loggedUser is not null %}
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav mr-auto">
-
-                                {% if isAdmin %}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/user">Users</a>
-                                    </li>
-                                {% endif %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/request">Requests</a>
-                                </li>
-                                <li class="nav-item float-end">
-                                    <a class="nav-link" href="#" onclick="logout();">Logout</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <a class="d-none d-sm-block">
-                            {{ loggedUser.firstName }} {{ loggedUser.lastName }}
-                        </a>
-                    {% endif %}
-                </nav>
+        <div class="container bg-light">
+            <header class="row header p-3">
+                <a class="col-6 col-sm-7 col-md-9 h1" href="/" >Bobyblog</a>
+                <form class="pt-2 col-6 col-sm-5 col-md-3" action="/" method="GET">
+                    <input type="text" class="form-control" id="tags" name="tags" placeholder="Look for tags..."/>
+                </form>
             </header>
             <div class="content px-2">
                 {% block content %}{% endblock %}

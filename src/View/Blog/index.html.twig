@@ -3,13 +3,17 @@
 {% block title %}Bobyblog{% endblock %}
 
 {% block content %}
-    <h1>I am alive and I am happy :)</h1>
     <div class="container">
-    {% for post in posts  %}
-        {% include 'Blog/article.html.twig' %}
-    {% endfor %}
+        {% include 'Blog/content-header.html.twig' %}
+        <div><h2>{{ totalResults }} post{% if totalResults > 1 %}s{% endif %} found{% if tags is not empty %} - Filtered by: <span>{{ tags|join(', ') }}</span>{% endif %}</h2></div>
+        {% if posts|length > 0 %}{% include 'Blog/pagination.html.twig' with pagination only %}{%  endif %}
+        <div class="articles">
+        {% for post in posts  %}
+            {% include 'Blog/article.html.twig' %}
+        {% endfor %}
+        </div>
     </div>
-        
+
     {% include 'photoswipe.html.twig' %}
 {% endblock %}
 
@@ -17,43 +21,43 @@
 {% block javascripts %}
     {{ parent() }}
     {% if posts is not empty %}
-    <script>
-         $(document).on('click', 'a.gallery', (event) => {
-             console.log(event);
-             openGallery(parseInt(event.currentTarget.dataset.postid), parseInt(event.currentTarget.dataset.index));
-         });
-         openGallery = (postId, mediaIndex) => {
-             var options = {
-                 index: mediaIndex,
-                 galleryPIDs: true,
-                 galleryUID: postId,
-                 shareEl: false,
-                 preload: [3,3]
-             };
-             let items = [];
-             $('a.gallery[data-postid='+postId+'] .media-container').each((index, mediaInGallery) => {
-                 let dataForGallery = {
-                     src: mediaInGallery.dataset.src,
-                     w: mediaInGallery.dataset.width,
-                     h: mediaInGallery.dataset.height,
-                     title: mediaInGallery.dataset.caption,
-                     pid: mediaInGallery.dataset.id
-                 }
+        <script>
+            $(document).on('click', 'a.gallery', (event) => {
+                openGallery(parseInt(event.currentTarget.dataset.postid), parseInt(event.currentTarget.dataset.index));
+            });
+            openGallery = (postId, mediaIndex) => {
+                var options = {
+                    index: mediaIndex,
+                    galleryPIDs: true,
+                    galleryUID: postId,
+                    shareEl: false,
+                    preload: [3, 3]
+                };
+                let items = [];
+                $('a.gallery[data-postid=' + postId + '] .media-container').each((index, mediaInGallery) => {
+                    let dataForGallery = {
+                        src: mediaInGallery.dataset.src,
+                        w: mediaInGallery.dataset.width,
+                        h: mediaInGallery.dataset.height,
+                        title: mediaInGallery.dataset.caption,
+                        pid: mediaInGallery.dataset.id
+                    }
 
-                 if(mediaInGallery.dataset.isvideo === 'true') {
-                    dataForGallery = {
-                        html: '<div class="video-wrapper"><video controls ><source src="'+mediaInGallery.dataset.src+'" type="video/mp4"></video></div>'
-                    };
-                }
-                 items.push(dataForGallery);
-             });
+                    if (mediaInGallery.dataset.isvideo === 'true') {
+                        dataForGallery = {
+                            html: '<div class="video-wrapper"><video controls ><source src="' + mediaInGallery.dataset.src + '" type="video/mp4"></video></div>'
+                        };
+                    }
+                    items.push(dataForGallery);
+                });
 
-            var pswpElement = document.querySelectorAll('.pswp')[0];
-            // Initializes and opens PhotoSwipe
-            var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
-            gallery.listen('beforeChange', () => {document.querySelectorAll('video').forEach(vid => vid.pause());});
-             gallery.init();
-         };
-    </script>
+                var pswpElement = document.querySelectorAll('.pswp')[0];
+                // Initializes and opens PhotoSwipe
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+                gallery.listen('beforeChange', ()=>($('video').trigger('pause')));
+                gallery.listen('close', ()=>($('video').trigger('pause')));
+                gallery.init();
+            };
+        </script>
     {% endif %}
 {% endblock %}

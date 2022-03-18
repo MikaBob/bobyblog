@@ -1,0 +1,51 @@
+{% if totalPages > 1 %}
+{% set from = currentPage - 2 %}
+{% set to = currentPage + 4 %}
+{% if from < 1 %}{% set from = currentPage - 1 %}{% endif %}
+{% if from < 1 %}{% set from = currentPage %}{% endif %}
+{% if to > totalPages %}{% set to = totalPages %}{% endif %}
+
+<div class="pagination mb-3">
+    {% if currentPage > 1 %}
+    <div class="pagination__prev">
+        <a class="pagination__page-link" href="/blog/index/{% if currentPage > 2 %}page/{{ currentPage - 1 }}/{% endif %}{{ urlParameters }}"><</a>
+    </div>
+    {% endif %}
+
+    {% if currentPage > 3 %}
+    <div class="pagination__page pagination--first">
+        <a class="pagination__page-link" href="/blog/index/{{ urlParameters }}">1</a>
+    </div>
+    {% endif %}
+
+    {% if from > 2 %}
+    <div class="pagination__spacer pagination__spacer_first">
+        <span class="pagination__spacer-span bg-secondary">...</span>
+    </div>
+    {% endif %}
+
+    {% for page in range(from, to) %}
+    <div class="pagination__page">
+        <a class="pagination__page-link{% if currentPage == page %} bg-secondary{% endif %}" href="/blog/index/page/{{ page }}/{{ urlParameters }}">{{ page }}</a>
+    </div>
+    {% endfor %}
+    
+    {% if (totalPages - to - 1) > 0 %}
+    <div class="pagination__spacer pagination__spacer_last">
+        <span class="pagination__spacer-span bg-secondary">...</span>
+    </div>
+    {% endif %}
+
+    {% if to < totalPages %}
+    <div class="pagination__page pagination--last">
+        <a class="pagination__page-link" href="/blog/index/page/{{ totalPages }}/{{ urlParameters }}">{{ totalPages }}</a>
+    </div>
+    {% endif %}
+
+    {% if currentPage < totalPages %}
+    <div class="pagination__next">
+        <a class="pagination__page-link" href="/blog/index/page/{{ currentPage + 1 }}/{{ urlParameters }}">></a>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
